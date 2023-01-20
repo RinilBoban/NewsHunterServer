@@ -30,3 +30,35 @@ app.post('/login',(req,res)=>{
         res.status(result.statusCode).json(result)
     })
 })
+
+app.post('/addNews',(req,res)=>{
+    console.log(req.body);
+    dataService.addNews(req.body.title,req.body.description,req.body.account)
+    .then(result=>{
+        res.status(result.statusCode).json(result)
+    })
+})
+
+app.post('/getClips',(req,res)=>{
+    dataService.getClips(req.body.account)
+    .then(result=>{
+        res.status(result.statusCode).json(result)
+    })
+})
+
+app.delete('/deleteclip',(req,res)=>{
+    console.log(req.params.id)
+    dataService.deleteclip(req.params.id).then(
+        (result)=>{
+            res.status(result.statusCode).json(result)
+        }
+    )
+})
+
+app.delete('/deleteallclip',(req,res)=>{
+    dataService.deleteallclip().then(
+        (result)=>{
+            res.status(result.statusCode).json(result)
+        }
+    )
+})

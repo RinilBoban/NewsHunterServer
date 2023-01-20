@@ -8,7 +8,7 @@ const user=mongoose.model('user',{
     name:String,
     acno:Number,
     password:String,
-    clipnews:[]
+    clipnews:[]    
 })
 module.exports={
     user
