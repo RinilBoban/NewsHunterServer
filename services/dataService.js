@@ -15,6 +15,7 @@ const register=(name,acno,password)=>{
               name:name,
               acno:acno,
               password:password,
+              propic:[],
               newsclip:[]
             })
             newUser.save();     // save data in MongoDB
@@ -32,13 +33,15 @@ const login = (acno,password)=>{
     if(user){
       currentUser=user.name
       currentAcno=user.acno
+      clipcount=user.clipnews.length
       return {
         status: 'true',
         statusCode: '200',
         // message: 'Login Success',
         message: `Welcome ${user.name}`,
         currentUser:currentUser,
-        currentAcno:currentAcno
+        currentAcno:currentAcno,
+        clipcount:clipcount
       }
     }
     else{
@@ -52,7 +55,7 @@ const login = (acno,password)=>{
 }        
 
 // addnews
-const addNews=(title,description,acno)=>{
+const addNews=(title,description,image,acno)=>{
   // var title=parseInt(Ftitle)
   // var description=parseInt(Fdescription)
   return db.user.findOne({acno})
@@ -60,7 +63,8 @@ const addNews=(title,description,acno)=>{
     if(user){
         user.clipnews.push({
           title:title,
-          description:description
+          description:description,
+          image:image
         })     
       user.save()     // save data in MongoDB
       return {
@@ -100,79 +104,76 @@ const addNews=(title,description,acno)=>{
     )
     }
     
-const deleteclip=(clipnews)=>{
-    return db.user.clipnews.deleteOne({clipnews}).then(
-      (result)=>{
-          if(result){
-            // return this.db.user.find().then(
-              return db.user.find().then(
-                  (result)=>{
-                      if(result){
-                          return{
-                              status:true,
-                              statusCode:200,
-                              clipnews:result,
-                              message:'Newsclip removed successfully'
-                          }
-                      }
-                      else{
-                          return{
-                              status:false,
-                              statusCode:404,
-                              message:'News not found'
-                          }
-                      }
-                  }
-              )
-          
-          }
-          else{
-              return{
-                  status:false,
-                  statusCode:404,
-                  message:'Your clipboard is empty'
-              }
-          }
+const deleteclip=(id,acno)=>{
+  var del=1
+  return db.user.findOne({acno})
+  .then(user=>{
+    if(user){
+        user.clipnews.splice(id,1) 
+        // user.clipnews[id].push(null)   
+      user.save()     // save data in MongoDB
+      return {
+        status: 'true',
+        statusCode: '200',
+        message: 'News Clip deleted Successfully'
       }
-  )
-}
+    }
+    else{
+        return {
+        status: 'false',
+        statusCode: '404',
+        message: 'User Not Found'
+      }
+      }
+    })}
 
-const deleteallclip=()=>{
-  return db.user.deleteOne({_clipnews}).then(
-    (result)=>{
-        if(result){
-            return this.db.user.find().then(
-                (result)=>{
-                    if(result){
-                        return{
-                            status:true,
-                            statusCode:200,
-                            wishlist:result,
-                            message:'Newsclip removed successfully'
-                        }
-                    }
-                    else{
-                        return{
-                            status:false,
-                            statusCode:404,
-                            message:'News not found'
-                        }
-                    }
-                }
-            )
-        
+
+const deleteallclip=(id,acno)=>{
+  return db.user.findOne({acno})
+  .then(user=>{
+    if(user){
+        user.clipnews.splice({
+          id
+        }) 
+      user.save()     
+      return {
+        status: 'true',
+        statusCode: '200',
+        message: 'News Clip Cleared Successfully'
+      }
+    }
+    else{
+        return {
+        status: 'false',
+        statusCode: '404',
+        message: 'User Not Found'
+      }
+      }
+    })}
+
+    const addpro=(dp,acno)=>{
+      return db.user.findOne({acno})
+      .then(user=>{
+        if(user){
+          user.propic.push({
+            dp})
+          console.log(user.propic);
+          user.save()     
+          return {
+            status: 'true',
+            statusCode: '200',
+            message: 'Profile Picture added Successfully'
+          }
         }
         else{
-            return{
-                status:false,
-                statusCode:404,
-                message:'Your clipboard is empty'
-            }
-        }
-    }
-)
-
-}
+            return {
+            status: 'false',
+            statusCode: '404',
+            message: 'User Not Found'
+          }
+          }
+        })}
+    
 
 module.exports={
             register,
@@ -180,5 +181,6 @@ module.exports={
             addNews,
             getClips,
             deleteclip,
-            deleteallclip
+            deleteallclip,
+            addpro
 }      

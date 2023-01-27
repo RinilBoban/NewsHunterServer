@@ -8,6 +8,7 @@ const user=mongoose.model('user',{
     name:String,
     acno:Number,
     password:String,
+    propic:[],
     clipnews:[]    
 })
 module.exports={

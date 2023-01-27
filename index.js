@@ -17,7 +17,7 @@ app.use(cors({
 }))
 
 app.post('/register',(req,res)=>{
-    console.log(req.body);
+    // console.log(req.body);
     dataService.register(req.body.username,req.body.acno,req.body.password)
     .then(result=>{
         res.status(result.statusCode).json(result);
@@ -33,7 +33,7 @@ app.post('/login',(req,res)=>{
 
 app.post('/addNews',(req,res)=>{
     console.log(req.body);
-    dataService.addNews(req.body.title,req.body.description,req.body.account)
+    dataService.addNews(req.body.title,req.body.description,req.body.image,req.body.account)
     .then(result=>{
         res.status(result.statusCode).json(result)
     })
@@ -46,19 +46,28 @@ app.post('/getClips',(req,res)=>{
     })
 })
 
-app.delete('/deleteclip',(req,res)=>{
-    console.log(req.params.id)
-    dataService.deleteclip(req.params.id).then(
+app.post('/deleteclip',(req,res)=>{
+    console.log(req.body.clipid,req.body.account)
+    dataService.deleteclip(req.body.clipid,req.body.account).then(
         (result)=>{
             res.status(result.statusCode).json(result)
         }
     )
 })
 
-app.delete('/deleteallclip',(req,res)=>{
-    dataService.deleteallclip().then(
+app.post('/deleteallclip',(req,res)=>{
+    dataService.deleteallclip(req.body.clipid,req.body.account).then(
         (result)=>{
             res.status(result.statusCode).json(result)
         }
     )
+})
+
+app.post('/addpro',(req,res)=>{
+    console.log(req.body.dp)
+    console.log(req.body.account);
+    dataService.addpro(req.body.dp,req.body.account)
+    .then(result=>{
+        res.status(result.statusCode).json(result)
+    })
 })
